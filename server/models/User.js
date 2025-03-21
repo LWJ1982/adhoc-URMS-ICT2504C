@@ -1,0 +1,66 @@
+module.exports = (sequelize, DataTypes) => {
+    const User = sequelize.define("User", {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        name: {
+            type: DataTypes.STRING(100),
+            allowNull: false
+        },
+        email: {
+            type: DataTypes.STRING(150),
+            allowNull: false,
+            unique: true
+        },
+        password: {
+            type: DataTypes.STRING(100),
+            allowNull: false
+        },
+        mobile: {
+            type: DataTypes.STRING(20),
+            allowNull: true
+        },
+        profile_picture: {
+            type: DataTypes.STRING(255),
+            allowNull: true
+        },
+        email_verified: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        verification_token: {
+            type: DataTypes.STRING(255),
+            allowNull: true
+        },
+        created_at: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW
+        }
+    }, {
+        tableName: 'users',
+        timestamps: false // Since we're using `created_at` manually
+    });
+
+    // User-Tutorial Association
+    //ToDo. Change the association link to integrate
+    User.associate = (models) => {
+        User.hasMany(models.Tutorial, {
+            foreignKey: "userId",
+            onDelete: "CASCADE"
+        });
+        // User-Profile Association
+        User.hasOne(models.Profile, {
+            foreignKey: "user_id",
+            as: "Profile",
+            onDelete: "CASCADE"
+        });
+    };
+
+    return User;
+};
