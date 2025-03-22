@@ -26,9 +26,11 @@ npm i dotenv
 npm i sequelize mysql2
 npm i yup
 npm i multer
-npm i nodemailer
-npm i bcrypt
-npm i jsonwebtoken
+npm i nodemailer uuid 
+npm i bcrypt 
+npm i jsonwebtoken  
+npm i google-auth-library 
+npm i jsonwebtoken mongoose
 ```
 
 ## To start the server (BackEnd)
@@ -49,6 +51,8 @@ npm i @mui/icons-material@5
 npm install @mui/icons-material
 npm i formik yup
 npm i react-toastify
+npm i --force @react-oauth/google 
+npm i --force google-auth-library
 ```
 
 ## To start the client (FrontEnd)

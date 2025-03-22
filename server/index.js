@@ -31,6 +31,8 @@ const userRoute = require('./routes/user');
 app.use("/user",userRoute);
 const profileRoute = require('./routes/profile');
 app.use("/profile",profileRoute);
+const googleAuthRoute = require('./routes/googleauth.js');
+app.use("/googleauth", googleAuthRoute);
 
 const db = require('./models');
 db.sequelize.sync({ alter: true })

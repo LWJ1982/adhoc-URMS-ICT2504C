@@ -2,7 +2,7 @@
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
 import './App.css';
-import { Container, AppBar, Toolbar, Typography, IconButton, Button, Avatar } from '@mui/material';
+import { Container, AppBar, Toolbar, Typography, IconButton, Button, Avatar, Box } from '@mui/material';
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import UserContext from './contexts/UserContext';
 
@@ -10,6 +10,7 @@ import UserContext from './contexts/UserContext';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import http from './http';
+import { GoogleLogin, googleLogout } from '@react-oauth/google';
 
 // Import pages/components
 import Register from './pages/Register';
@@ -44,9 +45,33 @@ function App() {
     }
   }, []);
 
-  const logout = () => {
+  //Google signin
+  const handleGoogleLogin = async (googleResponse) => {
+    try {
+      const response = await http.post('/googleauth/google', {
+        credential: googleResponse.credential
+      });
+
+      localStorage.setItem('accessToken', response.data.token);
+      setUser(response.data.user);
+      window.location = "/landingpage";
+    } catch (error) {
+      console.error("Google login error:", error);
+    }
+  };
+
+  const forceGoogleLogout = () => {
+    // Clear all local data
     localStorage.clear();
-    window.location = "/";
+    sessionStorage.clear();
+    
+    // Clear all cookies
+    document.cookie.split(";").forEach(c => {
+      document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+    
+    // Hard redirect to Google's logout page
+    window.location.href = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=" + encodeURIComponent(window.location.origin + "/register");
   };
 
   // Refresh profile function to update after changes
@@ -67,15 +92,14 @@ function App() {
             <Container>
               <Toolbar disableGutters={true}>
 
-                {/* Left side: Link to home */}
-                <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-                  <Typography variant="h6" component="div" sx={{ mr: 2 }}>
-                    User Management & Registration
-                  </Typography>
-                </Link>
-
                 {user && (
                   <>
+                    {/* Left side: Link to home */}
+                    <Link to="/landingpage" style={{ textDecoration: "none", color: "inherit" }}>
+                      <Typography variant="h6" component="div" sx={{ mr: 2 }}>
+                        User Registration & Management System
+                      </Typography>
+                    </Link>
                     <Link to="/addresses" style={{ textDecoration: "none", color: "inherit" }}>
                       <Button color="inherit">Addresses</Button>
                     </Link>
@@ -90,9 +114,9 @@ function App() {
                     }}  // Navigate to /profile
                       sx={{ p: 0 }}>
 
-                       {profileData?.profilePicture ? (
-                        <Avatar 
-                          src={profileData.profilePicture} 
+                      {profileData?.profilePicture ? (
+                        <Avatar
+                          src={profileData.profilePicture}
                           alt={profileData.name || "User"}
                           sx={{ width: 40, height: 40 }}
                         />
@@ -100,15 +124,34 @@ function App() {
                         <AccountCircle sx={{ fontSize: 40 }} />
                       )}
                     </IconButton>
-                    <Button onClick={logout} sx={{ ml: 2 }}>Logout</Button>
+                    <Button onClick={forceGoogleLogout} sx={{ ml: 2 }}>Logout</Button>
                   </>
                 )}
                 {!user && (
-                  <>
-                    <Link to="/register" ><Typography>Register</Typography></Link>
-                    <Link to="/login" ><Typography>Login</Typography></Link>
-                  </>
+                  <Box sx={{ ml: "auto", display: "flex", alignItems: "center", gap: 2 }}>
+                    <Typography variant="h6" component="div" sx={{ mr: 2 }}>
+                      User Registration & Management System
+                    </Typography>
+                    <Link to="/register" style={{ textDecoration: "none", color: "inherit" }}>
+                      <Typography>📝 Register</Typography>
+                    </Link>
+                    <Link to="/login" style={{ textDecoration: "none", color: "inherit" }}>
+                      <Typography>🗝️ Login</Typography>
+                    </Link>
+
+                    {/* Google Sign-In Button */}
+                    <GoogleLogin
+                       onSuccess={handleGoogleLogin}
+                       onError={() => console.log('Login Failed')}
+                       theme="filled_blue"
+                       text="signin_with"
+                       shape="rectangular"
+                       useOneTap={false}
+                       prompt="select_account"
+                    />
+                  </Box>
                 )}
+
               </Toolbar>
             </Container>
           </AppBar>
@@ -116,7 +159,8 @@ function App() {
           <Container>
             <Routes>
 
-              <Route path={"/"} element={<LandingPage />} />
+              <Route path={"/"} element={<Register />} />
+              <Route path={"/landingpage"} element={<LandingPage />} />
               <Route path="/addresses" element={<Addresses />} />
               <Route path="/addaddress" element={<AddAddress />} />
               <Route path="/editaddress/:id" element={<EditAddress />} />

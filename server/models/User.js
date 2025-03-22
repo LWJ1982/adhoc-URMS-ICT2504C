@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         password: {
             type: DataTypes.STRING(100),
-            allowNull: false
+            allowNull: function() {
+                return this.auth_method === 'google';}
         },
         mobile: {
             type: DataTypes.STRING(20),
