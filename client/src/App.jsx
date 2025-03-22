@@ -2,7 +2,7 @@
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
 import './App.css';
-import { Container, AppBar, Toolbar, Typography, IconButton, Button } from '@mui/material';
+import { Container, AppBar, Toolbar, Typography, IconButton, Button, Avatar } from '@mui/material';
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import UserContext from './contexts/UserContext';
 
@@ -23,15 +23,24 @@ import EditAddress from './pages/EditAddress';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
     if (localStorage.getItem("accessToken")) {
-      // Todo: get user data from server
+      // Get user data from server
       http.get('/user/auth').then((res) => {
         setUser(res.data.user);
+      }).catch(err => {
+        console.error("Auth error:", err);
+        localStorage.clear(); // Clear token if auth fails
       });
 
-      setUser({ name: 'User' });
+      // Get profile data including profile picture
+      http.get('/profile').then((res) => {
+        setProfileData(res.data.user);
+      }).catch(err => {
+        console.error("Profile fetch error:", err);
+      });
     }
   }, []);
 
@@ -40,8 +49,17 @@ function App() {
     window.location = "/";
   };
 
+  // Refresh profile function to update after changes
+  const refreshProfile = () => {
+    http.get('/profile').then((res) => {
+      setProfileData(res.data.user);
+    }).catch(err => {
+      console.error("Profile refresh error:", err);
+    });
+  };
+
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, profileData, refreshProfile }}>
       <Router>
         <ThemeProvider theme={MyTheme}>
 
@@ -63,14 +81,26 @@ function App() {
                     </Link>
 
                     {/* Profile Edit icon on the right */}
-                    <Typography>Welcome. {user.name}</Typography>
+                    <Typography sx={{ ml: "auto", mr: 1 }}>
+                      Welcome, {profileData?.name || user?.name || "User"}
+                    </Typography>
+
                     <IconButton color="inherit" onClick={() => {
                       window.location.href = "/profileedit";
                     }}  // Navigate to /profile
-                      sx={{ ml: "auto" }}>
-                      <AccountCircle />
+                      sx={{ p: 0 }}>
+
+                       {profileData?.profilePicture ? (
+                        <Avatar 
+                          src={profileData.profilePicture} 
+                          alt={profileData.name || "User"}
+                          sx={{ width: 40, height: 40 }}
+                        />
+                      ) : (
+                        <AccountCircle sx={{ fontSize: 40 }} />
+                      )}
                     </IconButton>
-                    <Button onClick={logout}>Logout</Button>
+                    <Button onClick={logout} sx={{ ml: 2 }}>Logout</Button>
                   </>
                 )}
                 {!user && (
