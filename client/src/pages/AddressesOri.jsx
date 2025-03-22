@@ -23,22 +23,29 @@ function Addresses() {
   const [loading, setLoading] = useState(true);
 
   // Fetch addresses on component mount
+
+
+  const fetchAddresses = () => {
+    http.get('/address').then((res) => {
+        console.log(res.data);
+        setAddresses(res.data);
+    });
+};
+
   useEffect(() => {
     fetchAddresses();
   }, []);
-
-  const fetchAddresses = async () => {
-    try {
-      
-      const response = await http.get("/address");
-      setAddresses(response.data);
-    } catch (error) {
-      console.error("Error fetching addresses:", error);
-      toast.error(`Failed to load addresses: ${error.response?.data?.message || error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const fetchAddresses = async () => {
+  //   try {
+  //     const response = await http.get("/address");
+  //     setAddresses(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching addresses:", error);
+  //     toast.error(`Failed to load addresses: ${error.response?.data?.message || error.message}`);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleEdit = (id) => {
     navigate(`/editaddress/${id}`);

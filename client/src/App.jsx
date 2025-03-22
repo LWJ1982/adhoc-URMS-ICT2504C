@@ -14,10 +14,12 @@ import http from './http';
 // Import pages/components
 import Register from './pages/Register';
 import Login from './pages/Login';
+import ProfileEdit from './pages/ProfileEdit';
 import LandingPage from "./pages/LandingPage";
 import Addresses from "./pages/Addresses";
-import AddressForm from "./pages/AddressForm";
-import ProfileEdit from './pages/ProfileEdit';
+import AddAddress from './pages/AddAddress';
+import EditAddress from './pages/EditAddress';
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -86,8 +88,8 @@ function App() {
 
               <Route path={"/"} element={<LandingPage />} />
               <Route path="/addresses" element={<Addresses />} />
-              <Route path="/addresses/create" element={<AddressForm />} />
-              <Route path="/addresses/edit/:id" element={<AddressForm />} />
+              <Route path="/addaddress" element={<AddAddress />} />
+              <Route path="/editaddress/:id" element={<EditAddress />} />
               <Route path={"/register"} element={<Register />} />
               <Route path={"/login"} element={<Login />} />
               <Route path={"/profileedit"} element={<ProfileEdit />} />
