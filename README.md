@@ -1,5 +1,5 @@
 # SIT-URMS
-
+# Instructions on how to run the application locally
 ## Setup the .env in the client folder (BackEnd)
 
 ```bash
