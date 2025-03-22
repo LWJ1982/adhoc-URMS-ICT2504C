@@ -1,16 +1,22 @@
+//UX, Styling, Design
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
-import EditTutorial from './pages/EditTutorial';
-import AddTutorial from './pages/AddTutorial';
-import Tutorials from './pages/Tutorials';
-import Register from './pages/Register';
-import Login from './pages/Login';
 import './App.css';
-import { Container, AppBar, Toolbar, Typography, Box, Button } from '@mui/material';
+import { Container, AppBar, Toolbar, Typography, IconButton, Button } from '@mui/material';
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import UserContext from './contexts/UserContext';
+
+//Critical Dependancy
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import http from './http';
-import UserContext from './contexts/UserContext';
+
+// Import pages/components
+import Register from './pages/Register';
+import Login from './pages/Login';
+import LandingPage from "./pages/LandingPage";
+import Addresses from "./pages/Addresses";
+import AddressForm from "./pages/AddressForm";
 import ProfileEdit from './pages/ProfileEdit';
 
 function App() {
@@ -41,17 +47,30 @@ function App() {
             <Container>
               <Toolbar disableGutters={true}>
 
-                <Link to="/"><Typography variant="h6" component="div">Learning</Typography></Link>
-                <Link to="/tutorials" ><Typography>Tutorials</Typography></Link>
-                <Box sx={{ flexGrow: 1 }}></Box>
+                {/* Left side: Link to home */}
+                <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+                  <Typography variant="h6" component="div" sx={{ mr: 2 }}>
+                    User Management & Registration
+                  </Typography>
+                </Link>
+
                 {user && (
                   <>
-                    <Link to="/profileedit" ><Typography variant="h7" component="div">Edit Profile</Typography></Link>
-                    <Typography>{user.name}</Typography>
+                    <Link to="/addresses" style={{ textDecoration: "none", color: "inherit" }}>
+                      <Button color="inherit">Addresses</Button>
+                    </Link>
+
+                    {/* Profile Edit icon on the right */}
+                    <Typography>Welcome. {user.name}</Typography>
+                    <IconButton color="inherit" onClick={() => {
+                      window.location.href = "/profileedit";
+                    }}  // Navigate to /profile
+                      sx={{ ml: "auto" }}>
+                      <AccountCircle />
+                    </IconButton>
                     <Button onClick={logout}>Logout</Button>
                   </>
-                )
-                }
+                )}
                 {!user && (
                   <>
                     <Link to="/register" ><Typography>Register</Typography></Link>
@@ -64,16 +83,17 @@ function App() {
 
           <Container>
             <Routes>
-              <Route path={"/"} element={<Tutorials />} />
-              <Route path={"/tutorials"} element={<Tutorials />} />
-              <Route path={"/addtutorial"} element={<AddTutorial />} />
-              <Route path={"/edittutorial/:id"} element={<EditTutorial />} />
+
+              <Route path={"/"} element={<LandingPage />} />
+              <Route path="/addresses" element={<Addresses />} />
+              <Route path="/addresses/create" element={<AddressForm />} />
+              <Route path="/addresses/edit/:id" element={<AddressForm />} />
               <Route path={"/register"} element={<Register />} />
               <Route path={"/login"} element={<Login />} />
               <Route path={"/profileedit"} element={<ProfileEdit />} />
+
             </Routes>
           </Container>
-
         </ThemeProvider>
       </Router>
     </UserContext.Provider>

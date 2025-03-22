@@ -10,14 +10,19 @@ app.use(cors({
     origin: process.env.CLIENT_URL
 }));
 
-// Simple Route
+// // Simple Route
+// app.get("/", (req, res) => {
+//     res.send("Welcome to the learning space.");
+// });
+
+// Root route for API health check
 app.get("/", (req, res) => {
-    res.send("Welcome to the learning space.");
-});
+    res.json({ message: "Address API is running" });
+  });
 
 // Routes
-const tutorialRoute = require('./routes/tutorial');
-app.use("/tutorial", tutorialRoute);
+const addressRoutes = require('./routes/address');
+app.use("/address", addressRoutes);
 const userRoute = require('./routes/user');
 app.use("/user",userRoute);
 const profileRoute = require('./routes/profile');
@@ -32,5 +37,5 @@ db.sequelize.sync({ alter: true })
         });
     })
     .catch((err) => {
-        console.log(err);
+        console.error("Failed to sync database:", err);
     });

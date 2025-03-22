@@ -99,7 +99,7 @@ const ProfileEdit = () => {
         
         try {
             setUploading(true);
-            const response = await http.post('/picture', formData, {
+            const response = await http.post('/profile/picture', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

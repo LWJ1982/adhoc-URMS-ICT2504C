@@ -50,10 +50,14 @@ module.exports = (sequelize, DataTypes) => {
     // User-Tutorial Association
     //ToDo. Change the association link to integrate
     User.associate = (models) => {
-        User.hasMany(models.Tutorial, {
-            foreignKey: "userId",
-            onDelete: "CASCADE"
+        // Many-to-Many
+        User.belongsToMany(models.Address, {
+            through: models.UserAddress, // or simply 'UserAddresses' if you prefer an implicit model
+            foreignKey: "user_id", // key in the join table
+            otherKey: "address_id", // secondary key in the join table
+            onDelete: "CASCADE",
         });
+
         // User-Profile Association
         User.hasOne(models.Profile, {
             foreignKey: "user_id",
