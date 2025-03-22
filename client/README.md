@@ -1,8 +1,58 @@
-# React + Vite
+# SIT-URMS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Setup the .env in the client folder (BackEnd)
 
-Currently, two official plugins are available:
+```bash
+APP_PORT = 3001
+CLIENT_URL = "http://localhost:3000"
+DB_HOST = "localhost"
+DB_PORT = 3306
+DB_USER = "A suitable username for user table"
+DB_PWD = "yr SQL PW"
+DB_NAME = "A suitable Schema name"
+JWT_SECRET = "your_JWT_app_secret"
+TOKEN_EXPIRES_IN = "Security preference 1d, for this project 30d"
+EMAIL_SERVICE = 'yr prefered email provider, recommend gmail'
+EMAIL_USER = 'a usable free email'
+EMAIL_PASSWORD = 'App Pass'
+```
+## Dependancy for the server (BackEnd)
+```bash
+npm init -y
+npm i express
+npm i nodemon --save-dev
+npm i cors
+npm i dotenv
+npm i sequelize mysql2
+npm i yup
+npm i multer
+npm i nodemailer
+npm i bcrypt
+npm i jsonwebtoken
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## To start the server (BackEnd)
+cd into the server folder
+```bash
+npm start
+```
+
+
+
+## Dependancy for the client (FrontEnd)
+```bash
+npm create vite .
+npm i react-router-dom
+npm i axios
+npm i @mui/material@5 @emotion/react@11 @emotion/styled@11
+npm i @mui/icons-material@5
+npm install @mui/icons-material
+npm i formik yup
+npm i react-toastify
+```
+
+## To start the client (FrontEnd)
+cd into the client folder
+```bash
+npm start
+```
